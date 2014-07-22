@@ -3,45 +3,26 @@ use point::Point;
 use show::Show;
 
 static NUM_ROWS: uint = 50;
+static NUM_COLUMNS: uint = 50;
+static DASH_STEP: uint = 10;
+static SYMBOLS: &'static str = "o+#*";
+static DASH_ROW: Row = Row {
+    symbols: [None, ..NUM_COLUMNS],
+    row_number: NUM_ROWS,
+};
+ 
 pub struct Graph {
     rows: [Row, ..NUM_ROWS],
 }
 
-static NUM_COLUMNS: uint = 50;
-static DASH_ROW: Row = Row {
-    symbols: [Absent, ..NUM_COLUMNS],
-    row_number: NUM_ROWS,
-};
- 
 struct Row {
-    symbols: [Symbol, ..NUM_COLUMNS],
+    symbols: [Option<PointSymbol>, ..NUM_COLUMNS],
     row_number: uint,
 }
 
 struct PointSymbol {
     point: Point,
     symbol: char,
-}
-
-enum Symbol {
-    Present(PointSymbol),
-    Absent,
-}
-
-impl Symbol {
-    fn is_present(&self) -> bool {
-        match *self {
-            Present(_) => true,
-            Absent => false,
-        }
-    }
-
-    fn get_point(&self) -> Point {
-        match *self {
-            Present(ps) => ps.point,
-            Absent => fail!("Can't get point of Absent symbol"),
-        }
-    }
 }
 
 impl PointSymbol {
@@ -68,15 +49,14 @@ impl PointSymbol {
 impl Row {
     fn empty(row_number: uint) -> Row {
         Row {
-            symbols: [Absent, ..NUM_COLUMNS],
+            symbols: [None, ..NUM_COLUMNS],
             row_number: row_number,
         }
     }
 
     fn points(&self) -> Vec<Point> {
         self.symbols.iter()
-            .filter(|symbol| symbol.is_present())
-            .map(|symbol| symbol.get_point())
+            .flat_map(|symbol| symbol.map(|p| p.point).move_iter())
             .collect()
     }
 
@@ -92,15 +72,15 @@ impl Row {
         if self.dash_column(column) { '.' } else { ' ' }
     }
 
-    fn get_symbol(&self, symbol: &Symbol, column: uint) -> char {
+    fn get_symbol(&self, symbol: &Option<PointSymbol>, column: uint) -> char {
         match *symbol {
-            Absent => self.get_absent_symbol(column),
-            Present(s) => s.symbol,
+            None => self.get_absent_symbol(column),
+            Some(s) => s.symbol,
         }
     }
 
     fn set_symbol(&mut self, symbol: PointSymbol) {
-        self.symbols[symbol.y().to_uint().unwrap()] = Present(symbol);
+        self.symbols[symbol.y().to_uint().unwrap()] = Some(symbol);
     }
 }
 
@@ -113,9 +93,6 @@ impl Show for Row {
         println!(".");
     }
 }
-
-static DASH_STEP: uint = 10;
-static SYMBOLS: &'static str = "o+#*";
 
 impl Graph {
     /// Returns a new graph from the given clusters

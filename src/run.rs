@@ -3,7 +3,7 @@ use std::f64;
 use cluster::Cluster;
 
 /// Perform kmeans clustering on a collection of points and return the resulting clusters
-pub fn kmeans(points: &[Point], num_clusters: u8) -> Vec<Cluster> {
+pub fn kmeans(points: &[Point], num_clusters: uint) -> Vec<Cluster> {
     let mut clusters = empty_clusters(num_clusters);
     let mut old_centroids = centroids(clusters.as_slice());
     init_assign_points(clusters.as_mut_slice(), points);
@@ -20,12 +20,8 @@ pub fn kmeans(points: &[Point], num_clusters: u8) -> Vec<Cluster> {
     clusters
 }
 
-fn empty_clusters(num_clusters: u8) -> Vec<Cluster> {
-    let mut clusters = Vec::new();
-    for _ in range(0, num_clusters) {
-        clusters.push(Cluster::empty());
-    }
-    clusters
+fn empty_clusters(num_clusters: uint) -> Vec<Cluster> {
+    Vec::from_fn(num_clusters, |_| Cluster::empty())
 }
 
 fn init_assign_points(clusters: &mut [Cluster], points: &[Point]) {
@@ -36,7 +32,9 @@ fn init_assign_points(clusters: &mut [Cluster], points: &[Point]) {
 }
 
 fn centroids(clusters: &[Cluster]) -> Vec<Point> {
-    clusters.iter().map(|c| c.centroid()).collect()
+    clusters.iter()
+        .map(|c| c.centroid())
+        .collect()
 }
 
 fn reassign_points(clusters: &mut [Cluster]) {

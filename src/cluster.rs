@@ -1,6 +1,6 @@
 use point::Point;
 
-use std::iter::{AdditiveIterator, iterate};
+use std::iter::AdditiveIterator;
 use std::mem::swap;
 use std::rand;
 use std::rand::distributions::{IndependentSample, Normal};
@@ -24,17 +24,15 @@ impl Cluster {
 
     /// Constructs a cluster with a gaussian distribution centered at the given point
     pub fn gaussian(centroid: Point, std_dev: f64, num_points: uint) -> Cluster {
-        let normal_x = &Normal::new(centroid.x, std_dev);
-        let normal_y = &Normal::new(centroid.y, std_dev);
-        let rand_point = |_| Point {
-                        x: normal_x.ind_sample(&mut rand::task_rng()),
-                        y: normal_y.ind_sample(&mut rand::task_rng()),
-                    };
-        let seed = rand_point(Point::origin());
+        let normal_x = Normal::new(centroid.x, std_dev);
+        let normal_y = Normal::new(centroid.y, std_dev);
+        let rng = &mut rand::task_rng();
+
         Cluster {
-            points: iterate(rand_point, seed)
-                .take(num_points)
-                .collect(),
+            points: Vec::from_fn(num_points, |_| Point {
+                        x: normal_x.ind_sample(rng),
+                        y: normal_y.ind_sample(rng),
+                    }),
             centroid: centroid,
         }
     }
