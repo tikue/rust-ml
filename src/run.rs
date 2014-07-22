@@ -1,6 +1,8 @@
 use point::Point;
+use std::f64;
 use cluster::Cluster;
 
+/// Perform kmeans clustering on a collection of points and return the resulting clusters
 pub fn kmeans(points: &[Point], num_clusters: u8) -> Vec<Cluster> {
     let mut clusters = empty_clusters(num_clusters);
     let mut old_centroids = centroids(clusters.as_slice());
@@ -48,9 +50,10 @@ fn reassign_points(clusters: &mut [Cluster]) {
         .collect();
 
     for point in points.move_iter() {
-        let &(index, _) = old_centroids.iter()
-            .min_by(|&&(_, p)| p.distance(point).round() as u64)
-            .unwrap();
+        let (index, _) = old_centroids.iter()
+            .map(|&(index, p)| (index, point.distance(p)))
+            .fold((0, f64::MAX_VALUE), 
+                  |t1 @ (_, f1), t2 @ (_, f2)| if f1 < f2 { t1 } else { t2 });
 
         clusters[index].add(point);
     }
