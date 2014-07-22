@@ -18,10 +18,10 @@ pub fn main() {
         rand_cluster(12.0, 38.0), 
         rand_cluster(38.0, 38.0), 
         rand_cluster(38.0, 12.0)];
-    let graph = Graph::from_clusters(clusters.as_slice());
+    let points: Vec<Point> = clusters.iter().flat_map(|c| c.iter().map(|&p| p)).collect();
+    let graph = Graph::from_points(points.as_slice());
     graph.show();
     
-    let points: Vec<Point> = clusters.iter().flat_map(|c| c.iter().map(|&p| p)).collect();
     let clusters = kmeans(points.as_slice(), 4);
     println!("num clusters = {}", clusters.len());
 

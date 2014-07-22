@@ -119,6 +119,14 @@ impl Graph {
         graph
     }
 
+    pub fn from_points(points: &[Point]) -> Graph {
+        let mut graph = Graph::empty();
+        for point in points.iter().map(|&point|  PointSymbol::new(point, 'o')) {
+            graph.set_symbol(point);
+        }
+        graph
+    }
+
     /// Returns an empty graph
     pub fn empty() -> Graph {
         let mut graph = Graph {
