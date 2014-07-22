@@ -2,18 +2,20 @@ use cluster::Cluster;
 use point::Point;
 use show::Show;
 
-use std::iter::range_step;
-
 static NUM_ROWS: uint = 50;
 pub struct Graph {
     rows: [Row, ..NUM_ROWS],
 }
 
 static NUM_COLUMNS: uint = 50;
+static DASH_ROW: Row = Row {
+    symbols: [Absent, ..NUM_COLUMNS],
+    row_number: NUM_ROWS,
+};
+ 
 struct Row {
     symbols: [Symbol, ..NUM_COLUMNS],
-    dash_step: uint,
-    dash_row: bool,
+    row_number: uint,
 }
 
 struct PointSymbol {
@@ -64,11 +66,10 @@ impl PointSymbol {
 }
 
 impl Row {
-    fn empty(dash_step: uint) -> Row {
+    fn empty(row_number: uint) -> Row {
         Row {
             symbols: [Absent, ..NUM_COLUMNS],
-            dash_step: dash_step,
-            dash_row: false,
+            row_number: row_number,
         }
     }
 
@@ -79,8 +80,12 @@ impl Row {
             .collect()
     }
 
+    fn dash_row(&self) -> bool {
+        self.row_number % DASH_STEP == 0
+    }
+
     fn dash_column(&self, column: uint) -> bool {
-        self.dash_row || column % self.dash_step == 0
+        self.dash_row() || column % DASH_STEP == 0
     }
 
     fn get_absent_symbol(&self, column: uint) -> char {
@@ -101,10 +106,11 @@ impl Row {
 
 impl Show for Row {
     fn show(&self) {
+        print!("{:>2} ", self.row_number);
         for (column, symbol) in self.symbols.iter().enumerate() {
             print!("{}  ", self.get_symbol(symbol, column));
         }
-        println!("");
+        println!(".");
     }
 }
 
@@ -130,13 +136,10 @@ impl Graph {
     /// Returns an empty graph
     pub fn empty() -> Graph {
         let mut graph = Graph {
-            rows: [Row::empty(DASH_STEP), ..NUM_COLUMNS],
+            rows: [Row::empty(0), ..NUM_COLUMNS],
         };
-        {
-            let rows = &mut graph.rows;
-            for i in range_step(0, NUM_COLUMNS, DASH_STEP) {
-                rows[i].dash_row = true;
-            }
+        for (row_number, row) in graph.rows.mut_iter().enumerate() {
+            row.row_number = row_number;
         }
         graph
     }
@@ -179,6 +182,7 @@ impl Show for Graph {
         for row in self.rows.iter() {
             row.show();
         }
+        DASH_ROW.show();
     }
 }
 
