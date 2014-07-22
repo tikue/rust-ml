@@ -44,7 +44,7 @@ fn reassign_points(clusters: &mut [Cluster]) {
         .collect();
 
     let points: Vec<Point> = clusters.mut_iter()
-        .flat_map(|c| c.dump_points().move_iter())
+        .flat_map(|c| c.evict_all().move_iter())
         .collect();
 
     for point in points.move_iter() {
