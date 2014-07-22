@@ -112,12 +112,14 @@ static DASH_STEP: uint = 10;
 static SYMBOLS: &'static str = "o+#*";
 
 impl Graph {
+    /// Returns a new graph from the given clusters
     pub fn from_clusters(clusters: &[Cluster]) -> Graph {
         let mut graph = Graph::empty();
         graph.set_clusters(clusters);
         graph
     }
 
+    /// Returns an empty graph
     pub fn empty() -> Graph {
         let mut graph = Graph {
             rows: [Row::empty(DASH_STEP), ..NUM_COLUMNS],
@@ -131,6 +133,7 @@ impl Graph {
         graph
     }
 
+    /// Returns a graph with a random number of points
     pub fn random(num_points: uint) -> Graph {
         let mut graph = Graph::empty();
         for _ in range(0, num_points) {
@@ -139,6 +142,7 @@ impl Graph {
         graph
     }
 
+    /// Returns a vector of all points on the graph
     pub fn points(&self) -> Vec<Point> {
         self.rows.iter()
             .flat_map(|row| row.points().move_iter())
