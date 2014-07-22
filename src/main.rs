@@ -5,11 +5,14 @@ use kmeans::point::Point;
 use kmeans::show::Show;
 use kmeans::run::kmeans;
 
+fn rand_cluster(x: f64, y: f64) -> Cluster {
+    Cluster::gaussian(Point::new(x, y), 3.0, 20)
+}
+
 // Creates four normally distributed clusters, gathers up the points, and runs kmeans on them
 // TODO: currently fails if any points are outside the graph coordinates
 // TODO: points are currently lost if they have the same rounded-int coordinates
 pub fn main() {
-    let rand_cluster = |x, y| Cluster::gaussian(Point::new(x, y), 3.0, 20);
     let clusters = [
         rand_cluster(12.0, 12.0), 
         rand_cluster(20.0, 20.0), 
