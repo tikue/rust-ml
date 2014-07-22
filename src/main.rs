@@ -15,9 +15,9 @@ fn rand_cluster(x: f64, y: f64) -> Cluster {
 pub fn main() {
     let clusters = [
         rand_cluster(12.0, 12.0), 
-        rand_cluster(20.0, 20.0), 
-        rand_cluster(30.0, 30.0), 
-        rand_cluster(30.0, 12.0)];
+        rand_cluster(12.0, 38.0), 
+        rand_cluster(38.0, 38.0), 
+        rand_cluster(38.0, 12.0)];
     let graph = Graph::from_clusters(clusters.as_slice());
     graph.show();
     
