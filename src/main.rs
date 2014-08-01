@@ -1,6 +1,7 @@
 extern crate kmeans;
+
 use kmeans::cluster::Cluster;
-use kmeans::graph::Graph;
+use kmeans::plot::Plot;
 use kmeans::point::Point;
 use kmeans::show::Show;
 use kmeans::run::kmeans;
@@ -19,12 +20,12 @@ pub fn main() {
         rand_cluster(38.0, 38.0), 
         rand_cluster(38.0, 12.0)];
     let points: Vec<Point> = clusters.iter().flat_map(|c| c.iter().map(|&p| p)).collect();
-    let graph = Graph::from_points(points.as_slice());
+    let graph = Plot::from_points(points.as_slice());
     graph.show();
     
     let clusters = kmeans(points.as_slice(), 4);
     println!("num clusters = {}", clusters.len());
 
-    let graph = Graph::from_clusters(clusters.as_slice());
+    let graph = Plot::from_clusters(clusters.as_slice());
     graph.show();
 }

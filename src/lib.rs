@@ -4,4 +4,4 @@ pub mod show;
 pub mod point;
 pub mod cluster;
 pub mod run;
-pub mod graph;
+pub mod plot;

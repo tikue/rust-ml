@@ -11,7 +11,7 @@ static DASH_ROW: Row = Row {
     row_number: NUM_ROWS,
 };
  
-pub struct Graph {
+pub struct Plot {
     rows: [Row, ..NUM_ROWS],
 }
 
@@ -94,16 +94,16 @@ impl Show for Row {
     }
 }
 
-impl Graph {
+impl Plot {
     /// Returns a new graph from the given clusters
-    pub fn from_clusters(clusters: &[Cluster]) -> Graph {
-        let mut graph = Graph::empty();
+    pub fn from_clusters(clusters: &[Cluster]) -> Plot {
+        let mut graph = Plot::empty();
         graph.set_clusters(clusters);
         graph
     }
 
-    pub fn from_points(points: &[Point]) -> Graph {
-        let mut graph = Graph::empty();
+    pub fn from_points(points: &[Point]) -> Plot {
+        let mut graph = Plot::empty();
         for point in points.iter().map(|&point|  PointSymbol::new(point, 'o')) {
             graph.set_symbol(point);
         }
@@ -111,8 +111,8 @@ impl Graph {
     }
 
     /// Returns an empty graph
-    pub fn empty() -> Graph {
-        let mut graph = Graph {
+    pub fn empty() -> Plot {
+        let mut graph = Plot {
             rows: [Row::empty(0), ..NUM_COLUMNS],
         };
         for (row_number, row) in graph.rows.mut_iter().enumerate() {
@@ -122,8 +122,8 @@ impl Graph {
     }
 
     /// Returns a graph with a random number of points
-    pub fn random(num_points: uint) -> Graph {
-        let mut graph = Graph::empty();
+    pub fn random(num_points: uint) -> Plot {
+        let mut graph = Plot::empty();
         for _ in range(0, num_points) {
             graph.set_symbol(PointSymbol::random('o'));
         }
@@ -154,7 +154,7 @@ impl Graph {
     }
 }
 
-impl Show for Graph {
+impl Show for Plot {
     fn show(&self) {
         for row in self.rows.iter() {
             row.show();
