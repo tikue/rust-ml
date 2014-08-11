@@ -1,4 +1,4 @@
-use point::Point;
+use points::point::Point;
 
 use std::iter::AdditiveIterator;
 use std::mem::swap;

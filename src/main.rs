@@ -1,10 +1,10 @@
-extern crate kmeans;
+extern crate ml;
 
-use kmeans::cluster::Cluster;
-use kmeans::plot::Plot;
-use kmeans::point::Point;
-use kmeans::show::Show;
-use kmeans::run::kmeans;
+use ml::points::Cluster;
+use ml::points::Point;
+use ml::plots::Plot;
+use ml::plots::Draw;
+use ml::kmeans;
 
 fn rand_cluster(x: f64, y: f64) -> Cluster {
     Cluster::gaussian(Point::new(x, y), 3.0, 20)
@@ -21,11 +21,11 @@ pub fn main() {
         rand_cluster(38.0, 12.0)];
     let points: Vec<Point> = clusters.iter().flat_map(|c| c.iter().map(|&p| p)).collect();
     let graph = Plot::from_points(points.as_slice());
-    graph.show();
+    graph.draw();
     
-    let clusters = kmeans(points.as_slice(), 4);
+    let clusters = kmeans::run(points.as_slice(), 4);
     println!("num clusters = {}", clusters.len());
 
     let graph = Plot::from_clusters(clusters.as_slice());
-    graph.show();
+    graph.draw();
 }

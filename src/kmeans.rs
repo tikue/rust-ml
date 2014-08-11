@@ -1,9 +1,9 @@
-use point::Point;
 use std::f64;
-use cluster::Cluster;
+use points::point::Point;
+use points::cluster::Cluster;
 
 /// Perform kmeans clustering on a collection of points and return the resulting clusters
-pub fn kmeans(points: &[Point], num_clusters: uint) -> Vec<Cluster> {
+pub fn run(points: &[Point], num_clusters: uint) -> Vec<Cluster> {
     let mut clusters = empty_clusters(num_clusters);
     let mut old_centroids = centroids(clusters.as_slice());
     init_assign_points(clusters.as_mut_slice(), points);

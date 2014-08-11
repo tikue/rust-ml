@@ -1,6 +1,6 @@
-use cluster::Cluster;
-use point::Point;
-use show::Show;
+use points::cluster::Cluster;
+use points::point::Point;
+use plots::draw::Draw;
 
 static NUM_ROWS: uint = 50;
 static NUM_COLUMNS: uint = 50;
@@ -84,8 +84,8 @@ impl Row {
     }
 }
 
-impl Show for Row {
-    fn show(&self) {
+impl Draw for Row {
+    fn draw(&self) {
         print!("{:>2} ", self.row_number);
         for (column, symbol) in self.symbols.iter().enumerate() {
             print!("{}  ", self.get_symbol(symbol, column));
@@ -154,12 +154,12 @@ impl Plot {
     }
 }
 
-impl Show for Plot {
-    fn show(&self) {
+impl Draw for Plot {
+    fn draw(&self) {
         for row in self.rows.iter() {
-            row.show();
+            row.draw();
         }
-        DASH_ROW.show();
+        DASH_ROW.draw();
     }
 }
 
