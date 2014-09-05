@@ -1,7 +1,10 @@
-kmeans
+rust-ml
 ======
 
-A library providing a basic kmeans implementation in rust as well as an ascii-printable graph.
+A machine learning library implemented in rust.
+Currently provides:
+* A basic kmeans implementation
+* A basic ascii-printable graph
 
 ## Prerequisites
 * Rust nightly; download at [rust-lang.org](http://www.rust-lang.org/)
