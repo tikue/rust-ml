@@ -43,11 +43,11 @@ fn reassign_points(clusters: &mut [Cluster]) {
         .enumerate()
         .collect();
 
-    let points: Vec<Point> = clusters.mut_iter()
-        .flat_map(|c| c.evict_all().move_iter())
+    let points: Vec<Point> = clusters.iter_mut()
+        .flat_map(|c| c.evict_all().into_iter())
         .collect();
 
-    for point in points.move_iter() {
+    for point in points.into_iter() {
         let (index, _) = old_centroids.iter()
             .map(|&(index, p)| (index, point.distance(p)))
             .fold((0, f64::MAX_VALUE), 

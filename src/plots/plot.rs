@@ -56,7 +56,7 @@ impl Row {
 
     fn points(&self) -> Vec<Point> {
         self.symbols.iter()
-            .flat_map(|symbol| symbol.map(|p| p.point).move_iter())
+            .flat_map(|symbol| symbol.map(|p| p.point).into_iter())
             .collect()
     }
 
@@ -115,7 +115,7 @@ impl Plot {
         let mut graph = Plot {
             rows: [Row::empty(0), ..NUM_COLUMNS],
         };
-        for (row_number, row) in graph.rows.mut_iter().enumerate() {
+        for (row_number, row) in graph.rows.iter_mut().enumerate() {
             row.row_number = row_number;
         }
         graph
@@ -133,7 +133,7 @@ impl Plot {
     /// Returns a vector of all points on the graph
     pub fn points(&self) -> Vec<Point> {
         self.rows.iter()
-            .flat_map(|row| row.points().move_iter())
+            .flat_map(|row| row.points().into_iter())
             .collect()
     }
 
