@@ -3,7 +3,6 @@ extern crate ml;
 use ml::points::Cluster;
 use ml::points::Point;
 use ml::plots::Plot;
-use ml::plots::Draw;
 use ml::kmeans;
 
 fn rand_cluster(x: f64, y: f64) -> Cluster {
@@ -21,11 +20,11 @@ pub fn main() {
         rand_cluster(38.0, 12.0)];
     let points: Vec<Point> = clusters.iter().flat_map(|c| c.iter().map(|&p| p)).collect();
     let graph = Plot::from_points(&*points);
-    graph.draw();
+    print!("{}", graph);
     
     let clusters = kmeans::run(&*points, 4);
     println!("num clusters = {}", clusters.len());
 
     let graph = Plot::from_clusters(&*clusters);
-    graph.draw();
+    print!("{}", graph);
 }

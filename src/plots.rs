@@ -1,7 +1,7 @@
 use points::cluster::Cluster;
 use points::point::Point;
-use plots::draw::Draw;
 
+use std::fmt;
 use std::num::ToPrimitive;
 
 const NUM_ROWS: usize = 50;
@@ -90,13 +90,14 @@ impl Row {
     }
 }
 
-impl Draw for Row {
-    fn draw(&self) {
-        print!("{:>2} ", self.row_number);
+#[allow(unstable)]
+impl fmt::String for Row {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        try!(write!(f, "{:>2} ", self.row_number));
         for (column, symbol) in self.symbols.iter().enumerate() {
-            print!("{}  ", self.get_symbol(symbol, column));
+            try!(write!(f, "{}  ", self.get_symbol(symbol, column)));
         }
-        println!(".");
+        writeln!(f, ".")
     }
 }
 
@@ -161,12 +162,13 @@ impl Plot {
     }
 }
 
-impl Draw for Plot {
-    fn draw(&self) {
+#[allow(unstable)]
+impl fmt::String for Plot {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         for row in self.rows.iter() {
-            row.draw();
+            try!(row.fmt(f));
         }
-        DASH_ROW.draw();
+        DASH_ROW.fmt(f)
     }
 }
 
