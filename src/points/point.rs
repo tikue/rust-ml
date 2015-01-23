@@ -1,10 +1,18 @@
-use std::rand::{Rng, task_rng};
+use std::num::{Float, ToPrimitive};
+use std::ops::Add;
+use std::ops::Div;
+use std::rand::{Rng, thread_rng};
 
 /// A point on a 2-dimensional grid
-#[deriving(Clone, PartialEq, Show, Zero)]
 pub struct Point {
     pub x: f64,
     pub y: f64,
+}
+impl Copy for Point{}
+impl PartialEq for Point{
+    fn eq(&self, rhs: &Point) -> bool {
+        self.x == rhs.x && self.y == rhs.y
+    }
 }
 
 impl Point {
@@ -17,10 +25,11 @@ impl Point {
     }
 
     /// Returns a new point with randomly generated coordinates in the given ranges
+    #[allow(unstable)]
     pub fn random(row_range: f64, column_range: f64) -> Point {
         Point {
-            x: task_rng().gen_range(0.0, row_range),
-            y: task_rng().gen_range(0.0, column_range)
+            x: thread_rng().gen_range(0.0, row_range),
+            y: thread_rng().gen_range(0.0, column_range)
         }
     }
 
@@ -38,14 +47,24 @@ impl Point {
     }
 }
 
-impl Add<Point, Point> for Point {
-    fn add(&self, rhs: &Point) -> Point {
+impl Add<Point> for Point {
+    type Output = Point;
+    fn add(self, rhs: Point) -> Point {
         Point::new(self.x + rhs.x, self.y + rhs.y)
     }
 }
 
-impl<T: ToPrimitive> Div<T, Point> for Point {
-    fn div(&self, rhs: &T) -> Point {
+impl<'a> Add<&'a Point> for Point {
+    type Output = Point;
+    fn add(self, rhs: &Point) -> Point {
+        self + *rhs
+    }
+}
+
+impl<T: ToPrimitive> Div<T> for Point {
+    type Output = Point;
+    #[allow(unstable)]
+    fn div(self, rhs: T) -> Point {
         let rhs = rhs.to_f64().unwrap();
         Point::new(self.x / rhs, self.y / rhs)
     }

@@ -1,18 +1,18 @@
 use points::point::Point;
 
-use std::iter::AdditiveIterator;
 use std::mem::swap;
+use std::ops::Add;
 use std::rand;
 use std::rand::distributions::{IndependentSample, Normal};
-use std::slice::Items;
+use std::slice::Iter;
 
 /// A cluster of points
-#[deriving(Clone)]
 pub struct Cluster {
     points: Vec<Point>,
     centroid: Point,
 }
 
+#[allow(unstable)]
 impl Cluster {
     /// Constructs an empty cluster with centroid arbitrarily placed at the origin
     pub fn empty() -> Cluster {
@@ -23,22 +23,24 @@ impl Cluster {
     }
 
     /// Constructs a cluster with a gaussian distribution centered at the given point
-    pub fn gaussian(centroid: Point, std_dev: f64, num_points: uint) -> Cluster {
+    pub fn gaussian(centroid: Point, std_dev: f64, num_points: u32) -> Cluster {
         let normal_x = Normal::new(centroid.x, std_dev);
         let normal_y = Normal::new(centroid.y, std_dev);
-        let rng = &mut rand::task_rng();
+        let rng = &mut rand::thread_rng();
 
         Cluster {
-            points: Vec::from_fn(num_points, |_| Point {
+            points: (0..num_points)
+                    .map(|_| Point {
                         x: normal_x.ind_sample(rng),
                         y: normal_y.ind_sample(rng),
-                    }),
+                    })
+                    .collect(),
             centroid: centroid,
         }
     }
 
     /// Returns an iterator over the points in the cluster
-    pub fn iter(&self) -> Items<Point> {
+    pub fn iter(&self) -> Iter<Point> {
         return self.points.iter();
     }
 
@@ -68,7 +70,7 @@ impl Cluster {
 
     /// Returns the centroid of all the points in the cluster
     fn compute_centroid(points: &[Point]) -> Point {
-        points.iter().map(|&p| p).sum() / points.len()
+        points.iter().fold(Point::origin(), Add::add) / points.len()
     }
 }
 

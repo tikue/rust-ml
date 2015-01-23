@@ -1,29 +1,34 @@
 use points::cluster::Cluster;
 use points::point::Point;
-use plots::draw::Draw;
 
-static NUM_ROWS: uint = 50;
-static NUM_COLUMNS: uint = 50;
-static DASH_STEP: uint = 10;
-static SYMBOLS: &'static str = "o+#*";
-static DASH_ROW: Row = Row {
-    symbols: [None, ..NUM_COLUMNS],
+use std::fmt;
+use std::num::ToPrimitive;
+
+const NUM_ROWS: usize = 50;
+const NUM_COLUMNS: usize = 50;
+const DASH_STEP: usize = 10;
+const SYMBOLS: &'static str = "o+#*";
+const DASH_ROW: Row = Row {
+    symbols: [None; NUM_COLUMNS],
     row_number: NUM_ROWS,
 };
  
 pub struct Plot {
-    rows: [Row, ..NUM_ROWS],
+    rows: [Row; NUM_ROWS],
 }
+impl Copy for Plot{}
 
 struct Row {
-    symbols: [Option<PointSymbol>, ..NUM_COLUMNS],
-    row_number: uint,
+    symbols: [Option<PointSymbol>; NUM_COLUMNS],
+    row_number: usize,
 }
+impl Copy for Row{}
 
 struct PointSymbol {
     point: Point,
     symbol: char,
 }
+impl Copy for PointSymbol{}
 
 impl PointSymbol {
     fn new(point: Point, symbol: char) -> PointSymbol {
@@ -47,9 +52,9 @@ impl PointSymbol {
 }
 
 impl Row {
-    fn empty(row_number: uint) -> Row {
+    fn empty(row_number: usize) -> Row {
         Row {
-            symbols: [None, ..NUM_COLUMNS],
+            symbols: [None; NUM_COLUMNS],
             row_number: row_number,
         }
     }
@@ -64,33 +69,35 @@ impl Row {
         self.row_number % DASH_STEP == 0
     }
 
-    fn dash_column(&self, column: uint) -> bool {
+    fn dash_column(&self, column: usize) -> bool {
         self.dash_row() || column % DASH_STEP == 0
     }
 
-    fn get_absent_symbol(&self, column: uint) -> char {
+    fn get_absent_symbol(&self, column: usize) -> char {
         if self.dash_column(column) { '.' } else { ' ' }
     }
 
-    fn get_symbol(&self, symbol: &Option<PointSymbol>, column: uint) -> char {
+    fn get_symbol(&self, symbol: &Option<PointSymbol>, column: usize) -> char {
         match *symbol {
             None => self.get_absent_symbol(column),
             Some(s) => s.symbol,
         }
     }
 
+    #[allow(unstable)]
     fn set_symbol(&mut self, symbol: PointSymbol) {
-        self.symbols[symbol.y().to_uint().unwrap()] = Some(symbol);
+        self.symbols[symbol.y().to_u32().unwrap() as usize] = Some(symbol);
     }
 }
 
-impl Draw for Row {
-    fn draw(&self) {
-        print!("{:>2} ", self.row_number);
+#[allow(unstable)]
+impl fmt::String for Row {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        try!(write!(f, "{:>2} ", self.row_number));
         for (column, symbol) in self.symbols.iter().enumerate() {
-            print!("{}  ", self.get_symbol(symbol, column));
+            try!(write!(f, "{}  ", self.get_symbol(symbol, column)));
         }
-        println!(".");
+        writeln!(f, ".")
     }
 }
 
@@ -113,7 +120,7 @@ impl Plot {
     /// Returns an empty graph
     pub fn empty() -> Plot {
         let mut graph = Plot {
-            rows: [Row::empty(0), ..NUM_COLUMNS],
+            rows: [Row::empty(0); NUM_COLUMNS],
         };
         for (row_number, row) in graph.rows.iter_mut().enumerate() {
             row.row_number = row_number;
@@ -122,9 +129,9 @@ impl Plot {
     }
 
     /// Returns a graph with a random number of points
-    pub fn random(num_points: uint) -> Plot {
+    pub fn random(num_points: u32) -> Plot {
         let mut graph = Plot::empty();
-        for _ in range(0, num_points) {
+        for _ in (0..num_points) {
             graph.set_symbol(PointSymbol::random('o'));
         }
         graph
@@ -137,8 +144,9 @@ impl Plot {
             .collect()
     }
 
+    #[allow(unstable)]
     fn set_symbol(&mut self, symbol: PointSymbol) {
-        self.rows[symbol.x().to_uint().unwrap()].set_symbol(symbol);
+        self.rows[symbol.x().to_u32().unwrap() as usize].set_symbol(symbol);
     }
 
     fn set_cluster(&mut self, cluster: &Cluster, symbol: char) {
@@ -154,12 +162,13 @@ impl Plot {
     }
 }
 
-impl Draw for Plot {
-    fn draw(&self) {
+#[allow(unstable)]
+impl fmt::String for Plot {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         for row in self.rows.iter() {
-            row.draw();
+            try!(row.fmt(f));
         }
-        DASH_ROW.draw();
+        DASH_ROW.fmt(f)
     }
 }
 

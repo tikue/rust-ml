@@ -3,25 +3,27 @@ use points::point::Point;
 use points::cluster::Cluster;
 
 /// Perform kmeans clustering on a collection of points and return the resulting clusters
-pub fn run(points: &[Point], num_clusters: uint) -> Vec<Cluster> {
+pub fn run(points: &[Point], num_clusters: u32) -> Vec<Cluster> {
     let mut clusters = empty_clusters(num_clusters);
-    let mut old_centroids = centroids(clusters.as_slice());
+    let mut old_centroids = centroids(&*clusters);
     init_assign_points(clusters.as_mut_slice(), points);
-    let mut new_centroids = centroids(clusters.as_slice());
+    let mut new_centroids = centroids(&*clusters);
     println!("running kmeans...");
-    let mut iteration = 0u;
+    let mut iteration = 0;
     while old_centroids != new_centroids {
         iteration += 1;
         println!("iteration {}", iteration);
         reassign_points(clusters.as_mut_slice());
         old_centroids = new_centroids;
-        new_centroids = centroids(clusters.as_slice());
+        new_centroids = centroids(&*clusters);
     }
     clusters
 }
 
-fn empty_clusters(num_clusters: uint) -> Vec<Cluster> {
-    Vec::from_fn(num_clusters, |_| Cluster::empty())
+fn empty_clusters(num_clusters: u32) -> Vec<Cluster> {
+    (0..num_clusters)
+        .map(|_| Cluster::empty())
+        .collect()
 }
 
 fn init_assign_points(clusters: &mut [Cluster], points: &[Point]) {
@@ -38,7 +40,7 @@ fn centroids(clusters: &[Cluster]) -> Vec<Point> {
 }
 
 fn reassign_points(clusters: &mut [Cluster]) {
-    let old_centroids: Vec<(uint, Point)> = clusters.iter()
+    let old_centroids: Vec<(usize, Point)> = clusters.iter()
         .map(|c| c.centroid())
         .enumerate()
         .collect();
