@@ -91,7 +91,7 @@ impl Row {
 }
 
 #[allow(unstable)]
-impl fmt::String for Row {
+impl fmt::Display for Row {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         try!(write!(f, "{:>2} ", self.row_number));
         for (column, symbol) in self.symbols.iter().enumerate() {
@@ -163,7 +163,7 @@ impl Plot {
 }
 
 #[allow(unstable)]
-impl fmt::String for Plot {
+impl fmt::Display for Plot {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         for row in self.rows.iter() {
             try!(row.fmt(f));
