@@ -84,14 +84,12 @@ impl Row {
         }
     }
 
-    #[allow(unstable)]
     fn set_symbol(&mut self, symbol: PointSymbol) {
         self.symbols[symbol.y().to_u32().unwrap() as usize] = Some(symbol);
     }
 }
 
-#[allow(unstable)]
-impl fmt::String for Row {
+impl fmt::Display for Row {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         try!(write!(f, "{:>2} ", self.row_number));
         for (column, symbol) in self.symbols.iter().enumerate() {
@@ -144,7 +142,6 @@ impl Plot {
             .collect()
     }
 
-    #[allow(unstable)]
     fn set_symbol(&mut self, symbol: PointSymbol) {
         self.rows[symbol.x().to_u32().unwrap() as usize].set_symbol(symbol);
     }
@@ -162,8 +159,7 @@ impl Plot {
     }
 }
 
-#[allow(unstable)]
-impl fmt::String for Plot {
+impl fmt::Display for Plot {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         for row in self.rows.iter() {
             try!(row.fmt(f));

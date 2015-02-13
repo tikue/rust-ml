@@ -1,7 +1,7 @@
 use std::num::{Float, ToPrimitive};
 use std::ops::Add;
 use std::ops::Div;
-use std::rand::{Rng, thread_rng};
+use rand::{Rng, thread_rng};
 
 /// A point on a 2-dimensional grid
 pub struct Point {
@@ -25,7 +25,6 @@ impl Point {
     }
 
     /// Returns a new point with randomly generated coordinates in the given ranges
-    #[allow(unstable)]
     pub fn random(row_range: f64, column_range: f64) -> Point {
         Point {
             x: thread_rng().gen_range(0.0, row_range),
@@ -63,7 +62,6 @@ impl<'a> Add<&'a Point> for Point {
 
 impl<T: ToPrimitive> Div<T> for Point {
     type Output = Point;
-    #[allow(unstable)]
     fn div(self, rhs: T) -> Point {
         let rhs = rhs.to_f64().unwrap();
         Point::new(self.x / rhs, self.y / rhs)

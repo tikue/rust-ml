@@ -3,3 +3,6 @@
 name = "ml"
 version = "0.1.0"
 authors = [ "timothy.j.kuehn@gmail.com" ]
+
+[dependencies.rand]
+rand = "0.1.2"

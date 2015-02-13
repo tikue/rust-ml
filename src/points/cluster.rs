@@ -2,8 +2,8 @@ use points::point::Point;
 
 use std::mem::swap;
 use std::ops::Add;
-use std::rand;
-use std::rand::distributions::{IndependentSample, Normal};
+use rand;
+use rand::distributions::{IndependentSample, Normal};
 use std::slice::Iter;
 
 /// A cluster of points
@@ -12,7 +12,6 @@ pub struct Cluster {
     centroid: Point,
 }
 
-#[allow(unstable)]
 impl Cluster {
     /// Constructs an empty cluster with centroid arbitrarily placed at the origin
     pub fn empty() -> Cluster {
