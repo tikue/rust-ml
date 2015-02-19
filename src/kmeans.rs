@@ -52,7 +52,7 @@ fn reassign_points(clusters: &mut [Cluster]) {
     for point in points.into_iter() {
         let (index, _) = old_centroids.iter()
             .map(|&(index, p)| (index, point.distance(p)))
-            .fold((0, f64::MAX_VALUE), 
+            .fold((0, f64::MAX), 
                   |t1, t2| {
                       let ((_, f1), (_, f2)) = (t1, t2);
                       if f1 < f2 { t1 } else { t2 }
