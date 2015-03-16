@@ -46,7 +46,7 @@ impl Cluster {
     /// Add a point to the cluster
     pub fn add(&mut self, point: Point) {
         self.points.push(point);
-        self.centroid = Cluster::compute_centroid(self.points.as_slice());
+        self.centroid = Cluster::compute_centroid(&self.points);
     }
 
     /// Returns the centroid of the cluster

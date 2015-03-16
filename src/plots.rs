@@ -2,7 +2,6 @@ use points::cluster::Cluster;
 use points::point::Point;
 
 use std::fmt;
-use std::num::ToPrimitive;
 
 const NUM_ROWS: usize = 50;
 const NUM_COLUMNS: usize = 50;
@@ -85,7 +84,7 @@ impl Row {
     }
 
     fn set_symbol(&mut self, symbol: PointSymbol) {
-        self.symbols[symbol.y().to_u32().unwrap() as usize] = Some(symbol);
+        self.symbols[symbol.y() as usize] = Some(symbol);
     }
 }
 
@@ -143,7 +142,7 @@ impl Plot {
     }
 
     fn set_symbol(&mut self, symbol: PointSymbol) {
-        self.rows[symbol.x().to_u32().unwrap() as usize].set_symbol(symbol);
+        self.rows[symbol.x() as usize].set_symbol(symbol);
     }
 
     fn set_cluster(&mut self, cluster: &Cluster, symbol: char) {

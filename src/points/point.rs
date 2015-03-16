@@ -1,4 +1,4 @@
-use std::num::{Float, ToPrimitive};
+use std::num::Float;
 use std::ops::Add;
 use std::ops::Div;
 use rand::{Rng, thread_rng};
@@ -60,10 +60,23 @@ impl<'a> Add<&'a Point> for Point {
     }
 }
 
-impl<T: ToPrimitive> Div<T> for Point {
+impl Div<f64> for Point {
     type Output = Point;
-    fn div(self, rhs: T) -> Point {
-        let rhs = rhs.to_f64().unwrap();
+    fn div(self, rhs: f64) -> Point {
         Point::new(self.x / rhs, self.y / rhs)
+    }
+}
+
+impl Div<i64> for Point {
+    type Output = Point;
+    fn div(self, rhs: i64) -> Point {
+        Point::new(self.x / rhs as f64, self.y / rhs as f64)
+    }
+}
+
+impl Div<usize> for Point {
+    type Output = Point;
+    fn div(self, rhs: usize) -> Point {
+        Point::new(self.x / rhs as f64, self.y / rhs as f64)
     }
 }

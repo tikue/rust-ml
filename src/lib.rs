@@ -1,5 +1,4 @@
 #![crate_name = "ml"]
-#![feature(core)]
 extern crate rand;
 
 pub mod points;
